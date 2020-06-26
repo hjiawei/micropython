@@ -1,0 +1,34 @@
+name: micropython
+version: "1.12"
+summary: MicroPython Unix port
+description: |
+  MicroPython is a lean and efficient Python implementation for microcontrollers and constrained systems.
+
+base: core18
+confinement: strict
+grade: stable
+
+apps:
+  micropython:
+    command: bin/micropython
+    plugs:
+      - home
+      - network
+
+build-packages:
+  - build-essential
+  - libffi-dev
+  - pkg-config
+
+parts:
+  micropython:
+    plugin: nil
+    source: https://github.com/micropython/micropython/releases/download/v1.12/micropython-1.12.tar.gz
+    source-type: tar
+    override-build: |
+      cd mpy-cross
+      make
+      cd ../ports/unix
+      make
+      mkdir $SNAPCRAFT_PART_INSTALL/bin
+      cp micropython $SNAPCRAFT_PART_INSTALL/bin
